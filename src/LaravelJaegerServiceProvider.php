@@ -21,7 +21,7 @@ final class LaravelJaegerServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->mergeConfigFrom(
-            __DIR__.'/../config/jaeger.php', 'config'
+            __DIR__.'/../config/jaeger.php', 'jaeger'
         );
     }
 
