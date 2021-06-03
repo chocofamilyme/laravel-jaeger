@@ -13,6 +13,7 @@ use Illuminate\Queue\Events\JobProcessed;
 use Illuminate\Queue\Events\JobProcessing;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
+use Jaeger\Sampler\ProbabilisticSampler;
 use Jaeger\Config;
 
 final class LaravelJaegerServiceProvider extends ServiceProvider
@@ -31,7 +32,13 @@ final class LaravelJaegerServiceProvider extends ServiceProvider
         ], 'config');
 
         $this->app->singleton(Jaeger::class, static function () {
+            /** @var Config $config */
             $config = Config::getInstance();
+
+            $config->setDisabled(!config('jaeger.enabled'));
+            $config->setSampler(
+                new ProbabilisticSampler((float) config('jaeger.sample_rate'))
+            );
 
             $client = $config->initTracer(
                 config('jaeger.service_name'),
