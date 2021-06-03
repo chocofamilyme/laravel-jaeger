@@ -17,6 +17,13 @@ use Jaeger\Config;
 
 final class LaravelJaegerServiceProvider extends ServiceProvider
 {
+    public function register(): void
+    {
+        $this->mergeConfigFrom(
+            __DIR__.'/../config/jaeger.php', 'config'
+        );
+    }
+
     public function boot(): void
     {
         $this->publishes([
