@@ -23,7 +23,7 @@ final class JobListener
     public function handle($event): void
     {
         if ($event instanceof JobProcessing) {
-            self::$operationName = "Job {$event->job->getName()}";
+            self::$operationName = "Job {$event->job->resolveName()}";
 
             $this->jaeger->start(self::$operationName, [
                 'job.connection_name' => $event->connectionName,
@@ -36,7 +36,7 @@ final class JobListener
         }
 
         if ($event instanceof JobProcessed || $event instanceof JobFailed) {
-            $operationName = self::$operationName ?? "Job {$event->job->getName()}";
+            $operationName = self::$operationName ?? "Job {$event->job->resolveName()}";
 
             $this->jaeger->stop($operationName);
 
