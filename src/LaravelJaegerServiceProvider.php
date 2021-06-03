@@ -48,8 +48,8 @@ final class LaravelJaegerServiceProvider extends ServiceProvider
             return new Jaeger($client);
         });
 
-        $this->app->terminating(function () {
-            $this->app->make(Jaeger::class)->finish();
+        app()->terminating(function () {
+            app(Jaeger::class)->finish();
         });
 
         $this->initHttp();
