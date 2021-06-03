@@ -19,9 +19,56 @@ You can publish the config file with:
 php artisan vendor:publish --provider="Chocofamilyme\LaravelJaeger\LaravelJaegerServiceProvider" --tag="config"
 ```
 
-## Usage
+## Basic Usage
 
-TODO
+1) You need to inject `\Chocofamilyme\LaravelJaeger\Jaeger` class by DI
+2) Start new span by command
+```php
+    $jaeger->start('Some operation', [
+        'tag1' => 'test',
+        'tag2' => 'test'
+    ]);
+```
+3) do some stuff
+4) (optional) stop span 
+```php
+    $jaeger->stop('Some operation', [
+        'tag3' => 'test',
+    ]);
+
+```
+
+All unstopped spans will be automatically stopped when application is terminated
+
+## Listeners
+
+There are 4 available listeners, they are disabled by default, you can turn on or write your own implementation for this listeners in config file
+
+```php
+'listeners' => [
+    'http' => [
+        'enabled' => env('JAEGER_HTTP_LISTENER_ENABLED', false),
+        'handler' => \Chocofamilyme\LaravelJaeger\JaegerMiddleware::class,
+    ],
+    'console' => [
+        'enabled' => env('JAEGER_CONSOLE_LISTENER_ENABLED', false),
+        'handler' => \Chocofamilyme\LaravelJaeger\Listeners\CommandListener::class,
+    ],
+    'query' => [
+        'enabled' => env('JAEGER_QUERY_LISTENER_ENABLED', false),
+        'handler' => \Chocofamilyme\LaravelJaeger\Listeners\QueryListener::class,
+    ],
+    'job' => [
+        'enabled' => env('JAEGER_JOB_LISTENER_ENABLED', false),
+        'handler' => \Chocofamilyme\LaravelJaeger\Listeners\JobListener::class,
+    ],
+]
+```
+
+- Http - Start new span for every http request
+- Console - Start new span for every running artisan console commands
+- Query - Start new span for every executed database query
+- Job - Start new span for every dispatched queue job
 
 ## Testing
 
