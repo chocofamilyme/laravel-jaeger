@@ -1,0 +1,53 @@
+{
+    "name": "chocofamilyme/laravel-jaeger",
+    "description": "Jaeger wrapper for Laravel",
+    "type": "library",
+    "license": "BSD-3-Clause",
+    "authors": [
+        {
+            "name": "Aidyn Makhataev",
+            "email": "makataev.7@gmail.com"
+        }
+    ],
+    "require": {
+        "php": "^7.4|^8.0",
+        "illuminate/database": "^8.0",
+        "illuminate/queue": "^8.0",
+        "illuminate/routing": "^8.0",
+        "ext-json": "*",
+        "jukylin/jaeger-php": "dev-dev_v3"
+    },
+    "require-dev": {
+        "orchestra/testbench": "^6.0",
+        "phpunit/phpunit": "^9.5",
+        "psalm/plugin-laravel": "^1.4.2",
+        "vimeo/psalm": "^4.6.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Chocofamilyme\\LaravelJaeger\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Chocofamilyme\\LaravelJaeger\\Tests\\": "tests"
+        }
+    },
+    "scripts": {
+        "psalm": "vendor/bin/psalm",
+        "test": "vendor/bin/phpunit --colors=always",
+        "test-coverage": "vendor/bin/phpunit --coverage-html coverage"
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Chocofamilyme\\LaravelJaeger\\LaravelJaegerServiceProvider"
+            ]
+        }
+    }
+}
