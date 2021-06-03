@@ -2,7 +2,7 @@
     "name": "chocofamilyme/laravel-jaeger",
     "description": "Jaeger wrapper for Laravel",
     "type": "library",
-    "license": "BSD-3-Clause",
+    "license": "MIT",
     "authors": [
         {
             "name": "Aidyn Makhataev",

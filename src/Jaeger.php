@@ -101,7 +101,7 @@ final class Jaeger
     {
         $this->isFinished = false;
 
-        if (false === $carrier) {
+        if (!$carrier) {
             $context = $this->tracer->extract(TEXT_MAP, $_SERVER);
         } else {
             $context = $this->tracer->extract(TEXT_MAP, $carrier);
