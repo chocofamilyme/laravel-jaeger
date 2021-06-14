@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Chocofamilyme\LaravelJaeger;
 
 use SplStack;
-use Jaeger\Span;
+use OpenTracing\Span;
 use OpenTracing\Tracer;
 use OpenTracing\SpanContext;
 use const OpenTracing\Formats\TEXT_MAP;
@@ -152,9 +152,6 @@ final class Jaeger
             $options['child_of'] = $context;
         }
 
-        /** @var Span $span */
-        $span = $this->tracer->startSpan($operationName, $options);
-
-        return $span;
+        return $this->tracer->startSpan($operationName, $options);
     }
 }
