@@ -159,6 +159,7 @@ final class Jaeger
             $spanParent = $this->spans->top();
 
             if ($spanParent instanceof \Jaeger\Span) {
+                /** @psalm-suppress UndefinedInterfaceMethod */
                 return $spanParent->getContext()->traceIdLowToString();
             }
         }
