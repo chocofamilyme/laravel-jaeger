@@ -61,17 +61,15 @@ final class Jaeger
             return ;
         }
 
-        foreach ($this->spans as $index => $span) {
-            /** @var Span $span */
-            if (strcmp($span->getOperationName(), $operationName) === 0) {
-                foreach ($tags as $key => $value) {
-                    $span->setTag($key, $value);
-                }
-                $span->finish();
-                $this->spans->offsetUnset($index);
+        $span = $this->spans->top();
 
-                break;
+        /** @var Span $span */
+        if (strcmp($span->getOperationName(), $operationName) === 0) {
+            foreach ($tags as $key => $value) {
+                $span->setTag($key, $value);
             }
+            $span->finish();
+            $this->spans->pop();
         }
     }
 
@@ -154,4 +152,31 @@ final class Jaeger
 
         return $this->tracer->startSpan($operationName, $options);
     }
+
+    public function getTraceId(): ?string
+    {
+        if (false === $this->spans->isEmpty()) {
+            $spanParent = $this->spans->top();
+
+            if ($spanParent instanceof \Jaeger\Span) {
+                /** @psalm-suppress UndefinedInterfaceMethod */
+                return $spanParent->getContext()->traceIdLowToString();
+            }
+        }
+
+        return null;
+    }
+
+    public function getRootTraceId(): ?string
+    {
+        $serverSpan = $this->serverContext;
+
+        if ($serverSpan instanceof \Jaeger\SpanContext) {
+            return $serverSpan->traceIdLowToString();
+        }
+
+        return null;
+    }
+
+
 }
