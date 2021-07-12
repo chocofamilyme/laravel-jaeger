@@ -6,6 +6,7 @@ namespace Chocofamilyme\LaravelJaeger;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Route;
 use Closure;
 
 final class JaegerMiddleware
@@ -25,7 +26,8 @@ final class JaegerMiddleware
     public function handle($request, Closure $next)
     {
         $httpMethod = $request->method();
-        $url = $request->path();
+        $route = Route::getRoutes()->match($request);
+        $uri = $route->uri();
 
         $headers = [];
 
@@ -36,7 +38,7 @@ final class JaegerMiddleware
         $jaeger = $this->jaeger;
 
         $jaeger->initServerContext($headers);
-        $jaeger->start("$httpMethod: /$url", [
+        $jaeger->start("$httpMethod: /$uri", [
             'http.scheme' => $request->getScheme(),
             'http.ip_address' => $request->ip(),
             'http.host' => $request->getHost(),
