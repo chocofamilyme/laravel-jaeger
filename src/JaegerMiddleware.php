@@ -25,8 +25,13 @@ final class JaegerMiddleware
      */
     public function handle($request, Closure $next)
     {
-        $httpMethod = $request->method();
         $route = Route::getRoutes()->match($request);
+        
+        if ($route->isFallback) {
+            return $next($request);
+        }
+
+        $httpMethod = $request->method();
         $uri = $route->uri();
 
         $headers = [];
