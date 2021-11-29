@@ -7,8 +7,6 @@ return [
 
     'address' => env('JAEGER_ADDRESS', 'jaeger:6831'),
 
-    'default_address' => 'jaeger:6831',
-
     'sample_rate' => env('JAEGER_SAMPLE_RATE', 0.1),
 
     'listeners' => [

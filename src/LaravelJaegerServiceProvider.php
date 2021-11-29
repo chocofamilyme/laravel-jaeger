@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 use Jaeger\Sampler\ProbabilisticSampler;
 use Jaeger\Config;
+use OpenTracing\NoopTracer;
 use Throwable;
 
 final class LaravelJaegerServiceProvider extends ServiceProvider
@@ -47,10 +48,7 @@ final class LaravelJaegerServiceProvider extends ServiceProvider
                     config('jaeger.address'),
                 );
             } catch (Throwable $exception) {
-                $client = $config->initTracer(
-                    config('jaeger.service_name'),
-                    config('jaeger.default_address'),
-                );
+                $client = new NoopTracer();
             }
 
             return new Jaeger($client);
