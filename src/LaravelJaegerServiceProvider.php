@@ -15,13 +15,14 @@ use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 use Jaeger\Sampler\ProbabilisticSampler;
 use Jaeger\Config;
+use Throwable;
 
 final class LaravelJaegerServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
         $this->mergeConfigFrom(
-            __DIR__.'/../config/jaeger.php', 'jaeger'
+            __DIR__ . '/../config/jaeger.php', 'jaeger'
         );
     }
 
@@ -40,10 +41,17 @@ final class LaravelJaegerServiceProvider extends ServiceProvider
                 new ProbabilisticSampler((float) config('jaeger.sample_rate'))
             );
 
-            $client = $config->initTracer(
-                config('jaeger.service_name'),
-                config('jaeger.address'),
-            );
+            try {
+                $client = $config->initTracer(
+                    config('jaeger.service_name'),
+                    config('jaeger.address'),
+                );
+            } catch (Throwable $exception) {
+                $client = $config->initTracer(
+                    config('jaeger.service_name'),
+                    config('jaeger.default_address'),
+                );
+            }
 
             return new Jaeger($client);
         });
