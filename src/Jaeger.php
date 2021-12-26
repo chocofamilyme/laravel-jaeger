@@ -73,6 +73,34 @@ final class Jaeger
         }
     }
 
+    public function startStop(string $operationName, ?float $duration, array $tags = []): void
+    {
+        if($duration <= 0) {
+            $this->start($operationName, $tags);
+            return;
+        }
+
+        $currentTime = microtime(true);
+
+        $startTime = $currentTime - $duration;
+
+        if ($this->spans->isEmpty()) {
+            $span = $this->startSpan($operationName, $this->serverContext, $startTime);
+        } else {
+            /** @var Span $parentSpan */
+            $parentSpan = $this->spans->top();
+            $span       = $this->startSpan($operationName, $parentSpan->getContext(), $startTime);
+        }
+
+        if ($tags) {
+            foreach ($tags as $key => $value) {
+                $span->setTag($key, $value);
+            }
+        }
+
+        $span->finish(intval($currentTime * 1000000));
+    }
+
     public function inject(array &$carrier): void
     {
         if ($this->getCurrentSpan() === null) {
@@ -137,17 +165,22 @@ final class Jaeger
     }
 
     /**
-     * @param string           $operationName
+     * @param string $operationName
      * @param SpanContext|null $context
+     * @param float|null $startTime
      *
      * @return Span
      */
-    private function startSpan(string $operationName, SpanContext $context = null): Span
+    private function startSpan(string $operationName, SpanContext $context = null, float $startTime = null): Span
     {
         $options = [];
 
         if ($context !== null) {
             $options['child_of'] = $context;
+        }
+
+        if ($startTime !== null) {
+            $options['start_time'] = $startTime;
         }
 
         return $this->tracer->startSpan($operationName, $options);
