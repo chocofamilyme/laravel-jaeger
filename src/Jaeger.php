@@ -73,13 +73,8 @@ final class Jaeger
         }
     }
 
-    public function startStop(string $operationName, ?float $duration, array $tags = []): void
+    public function startStop(string $operationName, array $tags = [], ?float $duration = 0): void
     {
-        if($duration <= 0) {
-            $this->start($operationName, $tags);
-            return;
-        }
-
         $currentTime = microtime(true);
 
         $startTime = $currentTime - $duration;
