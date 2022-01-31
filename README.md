@@ -40,6 +40,14 @@ php artisan vendor:publish --provider="Chocofamilyme\LaravelJaeger\LaravelJaeger
 
 All unstopped spans will be automatically stopped when application is terminated
 
+### Controlling the rate of traces
+
+In the configuration file you may modify *JAEGER_SAMPLE_RATE* variable
+to configure the rate. The variable accepts values from 0 to 1.
+
+For example, if you set 0.1 then only 10% of all traces is displayed.
+Set 1 to output them all.
+
 ## Listeners
 
 There are 4 available listeners, they are disabled by default, you can turn on or write your own implementation for this listeners in config file
