@@ -13,6 +13,5 @@
         </ignoreFiles>
     </projectFiles>
     <plugins>
-        <pluginClass class="Psalm\LaravelPlugin\Plugin"/>
     </plugins>
 </psalm>
