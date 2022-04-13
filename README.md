@@ -3,8 +3,8 @@
 
 ## Requirements
 
-- PHP ^7.4|^8.0
-- Laravel ^7.0|^8.0
+- PHP ^8.0
+- Laravel ^8.0|^9.0
 
 ## Installation
 
