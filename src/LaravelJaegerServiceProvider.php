@@ -13,10 +13,8 @@ use Illuminate\Queue\Events\JobProcessed;
 use Illuminate\Queue\Events\JobProcessing;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
-use Jaeger\Sampler\ProbabilisticSampler;
 use Jaeger\Config;
-use OpenTracing\NoopTracer;
-use Throwable;
+use OpenTracing\GlobalTracer;
 
 final class LaravelJaegerServiceProvider extends ServiceProvider
 {
@@ -33,23 +31,25 @@ final class LaravelJaegerServiceProvider extends ServiceProvider
             __DIR__ . '/../config/jaeger.php' => $this->app->configPath('jaeger.php'),
         ], 'config');
 
-        $this->app->singleton(Jaeger::class, static function () {
-            /** @var Config $config */
-            $config = Config::getInstance();
-
-            $config->setDisabled(!config('jaeger.enabled'));
-            $config->setSampler(
-                new ProbabilisticSampler((float) config('jaeger.sample_rate'))
+        $this->app->scoped(Jaeger::class, static function () {
+            $config = new Config(
+                [
+                    'sampler' => [
+                        'type'  => \Jaeger\SAMPLER_TYPE_PROBABILISTIC,
+                        'param' => (float) config('jaeger.sample_rate'),
+                    ],
+                    'local_agent' => [
+                        'reporting_host' => config('jaeger.host'),
+                        'reporting_port' => config('jaeger.port'),
+                    ],
+                    'dispatch_mode' => Config::JAEGER_OVER_BINARY_UDP,
+                ],
+                config('jaeger.service_name'),
             );
 
-            try {
-                $client = $config->initTracer(
-                    config('jaeger.service_name'),
-                    config('jaeger.address'),
-                );
-            } catch (Throwable $exception) {
-                $client = new NoopTracer();
-            }
+            $config->initializeTracer();
+
+            $client = GlobalTracer::get();
 
             return new Jaeger($client);
         });

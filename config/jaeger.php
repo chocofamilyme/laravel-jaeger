@@ -5,7 +5,9 @@ return [
 
     'service_name' => env('JAEGER_SERVICE_NAME', env('APP_NAME', 'Laravel')),
 
-    'address' => env('JAEGER_ADDRESS', 'jaeger:6831'),
+    'host' => env('JAEGER_HOST', 'jaeger'),
+
+    'port' => env('JAEGER_PORT', 6831),
 
     'sample_rate' => env('JAEGER_SAMPLE_RATE', 0.1),
 
