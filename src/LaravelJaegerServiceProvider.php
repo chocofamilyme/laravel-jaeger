@@ -33,17 +33,7 @@ final class LaravelJaegerServiceProvider extends ServiceProvider
 
         $this->app->singleton(Jaeger::class, static function () {
             $config = new Config(
-                [
-                    'sampler' => [
-                        'type'  => \Jaeger\SAMPLER_TYPE_PROBABILISTIC,
-                        'param' => (float) config('jaeger.sample_rate'),
-                    ],
-                    'local_agent' => [
-                        'reporting_host' => config('jaeger.host'),
-                        'reporting_port' => config('jaeger.port'),
-                    ],
-                    'dispatch_mode' => Config::ZIPKIN_OVER_COMPACT_UDP,
-                ],
+                config('jaeger.config'),
                 config('jaeger.service_name'),
             );
 
