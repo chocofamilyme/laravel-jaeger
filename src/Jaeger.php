@@ -36,7 +36,16 @@ final class Jaeger
         return $this->tracer;
     }
 
-    public function start(string $operationName, array $tags = []): void
+    public function startWithInject(string $operationName, array &$carrier, array $tags = []): Span
+    {
+        $span = $this->start($operationName, $tags);
+
+        $this->tracer->inject($span->getContext(), TEXT_MAP, $carrier);
+
+        return $span;
+    }
+
+    public function start(string $operationName, array $tags = []): Span
     {
         if ($this->spans->isEmpty()) {
             $span = $this->startSpan($operationName, $this->serverContext);
@@ -53,6 +62,8 @@ final class Jaeger
         }
 
         $this->spans->push($span);
+
+        return $span;
     }
 
     public function stop(string $operationName, array $tags = []): void
@@ -93,13 +104,13 @@ final class Jaeger
             }
         }
 
-        $span->finish(intval($currentTime * 1000000));
+        $span->finish((int)($currentTime * 1000000));
     }
 
     public function inject(array &$carrier): void
     {
         if ($this->getCurrentSpan() === null) {
-            throw new \Exception('Can not inject, there is no available span');
+            throw new \RuntimeException('Can not inject, there is no available span');
         }
 
         $this->tracer->inject(
@@ -188,7 +199,7 @@ final class Jaeger
 
             if ($spanParent instanceof \Jaeger\Span) {
                 /** @psalm-suppress UndefinedInterfaceMethod */
-                return $spanParent->getContext()->traceIdLowToString();
+                return $spanParent->getContext()->getTraceId();
             }
         }
 
@@ -200,11 +211,9 @@ final class Jaeger
         $serverSpan = $this->serverContext;
 
         if ($serverSpan instanceof \Jaeger\SpanContext) {
-            return $serverSpan->traceIdLowToString();
+            return $serverSpan->getTraceId();
         }
 
         return null;
     }
-
-
 }

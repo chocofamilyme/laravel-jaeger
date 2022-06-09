@@ -4,7 +4,7 @@
 ## Requirements
 
 - PHP ^8.0
-- Laravel ^8.0|^9.0
+- Laravel ^9.0
 
 ## Installation
 
@@ -83,6 +83,10 @@ There are 4 available listeners, they are disabled by default, you can turn on o
 ``` bash
 composer test
 ```
+
+## Changelog
+
+Read changelog [here](/changelog.md)
 
 ## License
 
