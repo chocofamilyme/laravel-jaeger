@@ -31,7 +31,7 @@ final class LaravelJaegerServiceProvider extends ServiceProvider
             __DIR__ . '/../config/jaeger.php' => $this->app->configPath('jaeger.php'),
         ], 'config');
 
-        $this->app->scoped(Jaeger::class, static function () {
+        $this->app->singleton(Jaeger::class, static function () {
             $config = new Config(
                 [
                     'sampler' => [
@@ -42,7 +42,7 @@ final class LaravelJaegerServiceProvider extends ServiceProvider
                         'reporting_host' => config('jaeger.host'),
                         'reporting_port' => config('jaeger.port'),
                     ],
-                    'dispatch_mode' => Config::JAEGER_OVER_BINARY_UDP,
+                    'dispatch_mode' => Config::ZIPKIN_OVER_COMPACT_UDP,
                 ],
                 config('jaeger.service_name'),
             );
