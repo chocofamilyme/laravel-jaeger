@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Chocofamilyme\LaravelJaeger\Listeners;
 
 use Chocofamilyme\LaravelJaeger\Jaeger;
-use Illuminate\Htpp\Client\Events\ConnectionFailed;
-use Illuminate\Htpp\Client\Events\RequestSending;
-use Illuminate\Htpp\Client\Events\ResponseReceived;
+use Illuminate\Http\Client\Events\ConnectionFailed;
+use Illuminate\Http\Client\Events\RequestSending;
+use Illuminate\Http\Client\Events\ResponseReceived;
 final class ClientListener
 {
     private Jaeger $jaeger;
