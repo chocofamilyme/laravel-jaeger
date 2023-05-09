@@ -20,7 +20,7 @@ final class QueryListener
     {
         $this->jaeger->startStop("DB Query: {$event->sql}",  [
             'query.sql'             => $event->sql,
-            'query.bindings'        => $event->bindings,
+            'query.bindings'        => implode(',', $event->bindings),
             'query.connection_name' => $event->connectionName,
             'query.time'            => $event->time
         ], $event->time/1000);
