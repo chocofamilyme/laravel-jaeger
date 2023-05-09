@@ -22,7 +22,7 @@ final class QueryListener
             'query.sql'             => $event->sql,
             'query.bindings'        => implode(',', $event->bindings),
             'query.connection_name' => $event->connectionName,
-            'query.time'            => $event->time
+            'query.time'            => (string)$event->time
         ], $event->time/1000);
     }
 }
