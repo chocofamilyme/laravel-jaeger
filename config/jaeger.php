@@ -34,5 +34,9 @@ return [
             'enabled' => env('JAEGER_JOB_LISTENER_ENABLED', false),
             'handler' => \Chocofamilyme\LaravelJaeger\Listeners\JobListener::class,
         ],
+        'client' => [
+            'enabled' => env('JAEGER_CLIENT_LISTENER_ENABLED', false),
+            'handler' => \Chocofamilyme\LaravelJaeger\Listeners\ClientListener::class,
+        ],
     ],
 ];

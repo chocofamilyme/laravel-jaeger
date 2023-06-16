@@ -11,6 +11,9 @@ use Illuminate\Foundation\Http\Kernel;
 use Illuminate\Queue\Events\JobFailed;
 use Illuminate\Queue\Events\JobProcessed;
 use Illuminate\Queue\Events\JobProcessing;
+use Illuminate\Http\Client\Events\ConnectionFailed;
+use Illuminate\Http\Client\Events\RequestSending;
+use Illuminate\Http\Client\Events\ResponseReceived;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 use Jaeger\Config;
@@ -52,6 +55,7 @@ final class LaravelJaegerServiceProvider extends ServiceProvider
         $this->initConsole();
         $this->initQuery();
         $this->initJob();
+        $this->initClient();
     }
 
     private function initHttp(): void
@@ -91,6 +95,15 @@ final class LaravelJaegerServiceProvider extends ServiceProvider
             Event::listen(JobProcessing::class, config('jaeger.listeners.job.handler'));
             Event::listen(JobProcessed::class, config('jaeger.listeners.job.handler'));
             Event::listen(JobFailed::class, config('jaeger.listeners.job.handler'));
+        }
+    }
+
+    private function initClient(): void
+    {
+        if (config('jaeger.listeners.client.enabled')) {
+            Event::listen(ConnectionFailed::class, config('jaeger.listeners.client.handler'));
+            Event::listen(RequestSending::class, config('jaeger.listeners.client.handler'));
+            Event::listen(ResponseReceived::class, config('jaeger.listeners.client.handler'));
         }
     }
 }
